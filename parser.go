@@ -19,7 +19,7 @@ var GoFigureLexer = lexer.Must(lexer.Regexp(
 		`(\s+)` +
 		`|([#;].*$)|(/\*[.\s\n\r]*\*/)` + // Comments
 		`|(?P<MLString>("""(?:\\.|[^(""")])*""")|('''(?:\\.|[^(''')])*'''))` +
-		`|(?P<String>("(.|\\)*?")|('(.|\\)*?'))` +
+		`|(?P<String>("(\\"|[^"])*?")|('(\\'|[^'])*?'))` +
 		`|(?P<Boolean>true|false)` +
 		`|(?P<Ident>` + re_valid_ident_part + `)` +
 		`|(?P<Float>-?\d+\.\d+)` +
