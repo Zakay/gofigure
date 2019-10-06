@@ -1,0 +1,47 @@
+# Comment
+; Another comment
+
+value: "Valuable"
+
+# Simple key value config
+key: value # Comment
+
+# Multi-dim keys
+key2.subkey: value
+
+# Multi-dim keys v2
+key3: {
+    primary: value
+    secondary: value
+}
+
+# Multi-dim keys v3
+key4: {
+    primary: value
+    secondary: {
+        third: value
+        fourth: value
+    }
+}
+
+# Array
+key5: [
+    value
+    value
+]
+
+# Array with complex values
+key6: [
+    value
+    value
+    {
+        key1: "test"
+        key2: "test2"
+        key3: ["test3" "test4"]
+    }
+    [
+        value 
+    ]
+]
+
+key1: {}

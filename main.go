@@ -1,50 +1,17 @@
 package main
 
 import (
-	//"fmt"
-	"os"
-	"io/ioutil"
 	"encoding/json"
-
-	"github.com/alecthomas/participle"
-	"github.com/alecthomas/participle/lexer"
-	"github.com/alecthomas/repr"
+	"flag"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
-var iniLexer = lexer.Unquote(lexer.Must(lexer.Regexp(
-	`(?m)` +
-		`(\s+)` +
-		`|(^[#;].*$)` +
-		`|(?P<Ident>[a-zA-Z][a-zA-Z_\d]*(\.[a-zA-Z][a-zA-Z_\d]*)*)` +
-		`|(?P<String>"(?:\\.|[^"])*")` +
-		`|(?P<Float>\d+(?:\.\d+)?)` +
-		`|(?P<Punct>[][:])` +
-		`|(?P<MapStart>[][{])` +
-		`|(?P<MapStart>[][}])`,
-)))
-
-type CONFIG struct {
-	Properties []*Property `{ @@ }`
-	Sections   []*Section  `{ @@ }`
-}
-
-type Section struct {
-	Identifier string      `"[" @Ident "]"`
-	Properties []*Property `{ @@ }`
-}
-
-type Property struct {
-	Key   string `@Ident { @"." @Ident } ":"`
-	Value *Value `@@`
-}
-
-type Value struct {
-	String *string        `  @String`
-	Number *float64       `| @Float`
-	Identifier string     `| @Ident `
-	Map []*Property       `| "{" { @@ [ "," ] } "}"`
-	List []*Value         `| "[" { @@ [ "," ] } "]"`
-}
+var stderr = log.New(os.Stderr, "", 0)
 
 func check(e error) {
 	if e != nil {
@@ -52,22 +19,53 @@ func check(e error) {
 	}
 }
 
+var outFile string
+var inFile string
+
+func init() {
+	flag.StringVar(&outFile, "o", "", "Output filename")
+	flag.StringVar(&inFile, "i", "", "Input filename")
+}
+
 func main() {
-	// Initialize the root
-	config := &CONFIG{}
+	flag.Parse()
 
-	// Build the parser
-	parser, err := participle.Build(&CONFIG{}, iniLexer)
+	if inFile == "" || len(os.Args) < 2 {
+		stderr.Println("Need a file to parse")
+		fmt.Println("usage: " + os.Args[0] + " -i inFile [-o outFile]")
+		flag.PrintDefaults()
+		os.Exit(1)
+	}
 
-	// Read file
-	data, err := ioutil.ReadFile("config.txt")
-	check(err)
-	dataString := string(data)
+	path, err := filepath.Abs(inFile)
 
-	// Parse the config
-	err = parser.ParseString(dataString, config)
 	check(err)
 
-	json.NewEncoder(os.Stdout).Encode(config)
-	repr.Println(config, repr.Indent("  "), repr.OmitEmpty(true))
+	pathParts := strings.Split(path, "/")
+
+	pathParts = pathParts[:len(pathParts)-1]
+
+	path = strings.Join(pathParts, "/")
+
+	err = os.Chdir(path)
+
+	check(err)
+
+	inFilePathParts := strings.Split(inFile, "/")
+
+	inFileName := inFilePathParts[len(inFilePathParts)-1]
+
+	config := ParseFile(inFileName, nil)
+
+	mapped := config.Transform()
+
+	marshaled, err := json.Marshal(mapped)
+
+	check(err)
+
+	if outFile == "" {
+		fmt.Println(string(marshaled))
+	} else {
+		ioutil.WriteFile(outFile, marshaled, 0644)
+	}
 }

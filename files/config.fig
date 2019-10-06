@@ -1,0 +1,47 @@
+%include "files/config.define_roots.fig"
+%include "files/config.define_sub_roots.fig"
+%include "files/config.strings.fig"
+
+value:"str"
+[test]
+value:""
+
+key.test:value
+
+[@.test]
+# Simple key value config
+key: test.value
+strKey: "Value\""
+
+# Multi-dim keys
+key2.primary: test.value
+key2.secondary: test.value
+
+# Multi-dim keys v2
+key3: {
+    primary: test.value
+    secondary: test.value
+}
+
+value1: "testVal"
+value2: test.test.value1
+
+# Array
+key4: [
+    value1
+    test.test.value2
+]
+
+key: "test"
+key: 'test'
+
+mlString: """test   again
+    again
+and again"""
+mlString2: '''test        again
+    again
+and again'''
+
+\"
+[]
+%include "files/config.special.fig"

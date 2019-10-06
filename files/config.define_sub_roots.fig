@@ -1,23 +1,28 @@
 # [@] is already defined as dev,production
+[%{dev,production}]
+localhost: "10.10.10.10"
+root: "root"
 
 # Defining possible sub roots for database
 [@.database.%{master,slave}]
 
 # Define host/username/password for master/slave
 [@.database.@]
-host: localhost
-username: root
-password: root
+
+host: dev.localhost
+username: dev.root
+password: dev.root
 
 # Overwrite host for slave
 [@.database.slave]
-host: 127.0.0.1
+host: "127.0.0.1"
 
 # Overwrite host for production
 [production.database]
-master.host: 10.0.10.1
-slave.host: 10.0.10.2
+master.host: "10.0.10.1"
+slave.host: "10.0.10.2"
 
 # Overwrite password for all databases in production
 [production.database.@]
-password: 12345
+password: 12345 # integer
+float: 1.5 

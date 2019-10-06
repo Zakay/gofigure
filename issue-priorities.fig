@@ -1,0 +1,25 @@
+[return.%{0,1,2,3,4}]
+value
+name
+backgroundColor
+textColor: "#FAFAFA"
+
+[]
+
+return.0.value: 4
+return.1.value: 3
+return.2.value: 2
+return.3.value: 1
+return.4.value: 0
+
+return.0.name: "Urgent"
+return.1.name: "High"
+return.2.name: "Medium"
+return.3.name: "Low"
+return.4.name: "None"
+
+return.0.backgroundColor: "#e53935"
+return.1.backgroundColor: "#f57f17"
+return.2.backgroundColor: "#FBC02D"
+return.3.backgroundColor: "#0288D1"
+return.4.backgroundColor: "#616161"

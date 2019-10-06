@@ -1,0 +1,40 @@
+%include "files/config.define_roots.fig"
+%include "files/config.define_sub_roots.fig"
+%include "files/config.strings.fig"
+
+value:"stringvalue"
+
+key.test:"stringvalue2"
+
+[root1.subroot root2]
+key: "test"
+
+#[@.test]
+# Simple key value config
+key: key.test
+
+# Multi-dim keys
+key2.primary: value
+key2.secondary: value
+
+# Multi-dim keys v2
+key3: {
+    primary: value
+    secondary: value
+}
+
+value1: "testVal"
+value2: root1.subroot.value1
+
+[test3]
+
+# Array
+key4: [
+    root1.subroot.value1 # Get variables from other scopes
+    root2.value2
+    key # Look in local scope first, then in global scope
+]
+
+[]
+
+%include "files/config.special.fig"

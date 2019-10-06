@@ -1,7 +1,0 @@
-special_case_root_key: This key will not be in the same level as dev and production keys
-
-# Empty value
-empty_value:
-
-# Basic keys with the value " must be escaped
-quote_value: \"
